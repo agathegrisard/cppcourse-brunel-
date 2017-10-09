@@ -5,46 +5,46 @@
 using namespace std; 
 
 Neuron::Neuron (double mp, int s, int t)
-	: membrane_potential (mp), spikes (s), SpikeTime (t)
+	: membrane_potential (mp), num_spikes (s), SpikeTime (t)
 	{}
 	
 Neuron::Neuron () 
-	:membrane_potential(0.0), spikes (0), SpikeTime (0)
+	:membrane_potential(0.0), num_spikes (0), SpikeTime (0)
 	{}
 
-int Neuron::getSpike ()
-{ return spikes;}
-
-int Neuron::getSpikeTime ()
-{ return SpikeTime;}
 
 double Neuron::getMembPot ()
 { return membrane_potential; }
 
-		
-void Neuron::setSpike (int s)
-{ spikes = s; }
+double Neuron::getLastSpike ()
+{ if (! SpikeTime.empty ())
+	{ return SpikeTime.back();}
+	else { return 0; }
+ }
 
-void Neuron::setSpikeTime (int t)
-{ SpikeTime = t; }
 
 void Neuron::setMembPot (double mp)
 { membrane_potential = mp; } 
+
+
 
 bool Neuron::isSpiking ()
 { return membrane_potential > Vth; }
 
 bool Neuron::isRefractory (double t)
-{ return (t - SpikeTime [SpikeTime.size () ] < Tref ); }
+{ return !SpikeTime.empty() && (t - SpikeTime.back() < Tref ); }
+
+
 		
 void Neuron::update (double current, double t)
 {
 	if (isRefractory (t) ) 
 	{ setMembPot(0.0); }
 		else { 
-			double p (exp(-h/tau). membrane_potential + current * tau / C * (1-exp(-h/tau)); 
+			double p (exp(-h/tau)*membrane_potential + current * (tau / C) * (1-exp(-h/tau))); 
 			setMembPot(p); 
 			PotMem.push_back(p); 
 		
-		if (isSpiking ()) { SpikeTime.pushback(t); }
+		if (isSpiking ()) { SpikeTime.push_back(t); }
+	}
 }

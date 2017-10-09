@@ -1,5 +1,5 @@
 #include <iostream>
-#include "neuron.cpp"
+#include "neuron.hpp"
 
 using namespace std; 
 
@@ -13,8 +13,7 @@ int main ()
 	double simTime (Tstart);
 	double a (0.0); 
 	double b (0.0); 
-	double current (0.0); 
-	double I (0.0); 
+	double current (0.0);  
 	Neuron n; 
 	
 	
@@ -26,9 +25,10 @@ int main ()
 	 cin >> b; 
 	 
 	 cout << " What is the external current value ? " << endl; 
-	 cin >> current; 
+	 cin >> current;
+	
 	 
-	 while (simTime < Tstop) 
+	 while (simTime <= Tstop) 
 	 {
 		if (simTime >= a and simTime<b ) 
 		{ 
@@ -36,6 +36,7 @@ int main ()
 		} else { n.update (0.0, simTime); }
 		
 		simTime += h; 
+		cout << "SpikeTime at : " << simTime << " " << n.getLastSpike() << endl; 
 	}
 	
 	return 0; 

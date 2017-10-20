@@ -1,43 +1,49 @@
 #include <iostream>
+#include <cassert>
 #include "neuron.hpp"
-#includ "constant.hpp"
+
 
 using namespace std; 
 
-
-int main ()
+int main(int argc, char* argv[])
 {
-	 
-	double Tstart (0.0); 
-	double Tstop (0.0); 
-	double simTime (Tstart);
-	double a (0.0); 
-	double b (0.0); 
-	double current (0.0);  
-	Neuron n; 
-	
-	
-	cout << " How long does the simulation last?" << endl; 
-	 cin >> Tstop; 
-	 
-	 cout << " what is the time interval for the external current? " << endl; 
-	 cin >> a; 
-	 cin >> b; 
-	 
-	 cout << " What is the external current value ? " << endl; 
-	 cin >> current;
-	
-	 
-	 while (simTime <= Tstop) 
-	 {
-		if (simTime >= a and simTime<b ) 
-		{ 
-			n.update (current, simTime); 
-		} else { n.update (0.0, simTime); }
-		
-		simTime += h; 
-		cout << "SpikeTime at : " << simTime << " " << n.getLastSpike() << endl; 
-	}
-	
-	return 0; 
+    ofstream spike ("potential-dat");
+    Neuron n1, n2;
+   
+    int i_start=1000;           										///time when the step current starts
+    int i_stop=4000;           											///time when the step current ends
+    int t_stop=5000;            										///total simulation time
+    double I_ext=1.01;                									///amplitude of the current
+   
+    if(argc>1)            												///send an error
+    {
+        I_ext=atof(argv[1]);
+    }
+   
+   
+   
+    for(int t=0; t<=t_stop; ++t)
+    {
+        if((t>=i_start) and (t<=i_stop))
+        {
+            n1.setExtCurrent(I_ext);
+        }
+        else
+        {
+            n1.setExtCurrent(0.0);
+        }
+       
+        n1.update(t);
+        n2.update(t);
+       
+        if (n1.isSpiking()) {
+            spike << "Spikes at : " << neuron.getLastSpike() << endl;
+        }
+       
+       
+    }
+    return 0;
 }
+
+
+

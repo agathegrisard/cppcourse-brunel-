@@ -6,7 +6,7 @@
 
 using namespace std; 
 
-constexpr double E = 10.0;
+constexpr double J = 10.0; /// value after spiking of the post-synaptic excitement post-synaptic excitement value after spike
 
 class Network 
 { 

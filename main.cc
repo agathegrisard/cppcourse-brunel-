@@ -1,13 +1,14 @@
 #include <iostream>
+#include <fstream>
 #include <cassert>
 #include "neuron.hpp"
 
 
 using namespace std; 
 
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
-    ofstream spike ("potential-dat");
+   //ofstream spike ("potential.dat");
     Neuron n1, n2;
    
     int i_start=1000;           										///time when the step current starts
@@ -15,14 +16,13 @@ int main(int argc, char* argv[])
     int t_stop=5000;            										///total simulation time
     double I_ext=1.01;                									///amplitude of the current
    
-    if(argc>1)            												///send an error
+  if(argc>1)            												///send an error
     {
         I_ext=atof(argv[1]);
     }
    
    
-   
-    for(int t=0; t<=t_stop; ++t)
+   for(int t=0; t<=t_stop; ++t)
     {
         if((t>=i_start) and (t<=i_stop))
         {
@@ -33,11 +33,11 @@ int main(int argc, char* argv[])
             n1.setExtCurrent(0.0);
         }
        
-        n1.update(t);
-        n2.update(t);
+        n1.update();
+        n2.update();
        
         if (n1.isSpiking()) {
-            spike << "Spikes at : " << neuron.getLastSpike() << endl;
+           cout << "Spikes at : " << n1.convert_ms(n1.getLastSpike()) << endl;
         }
        
        

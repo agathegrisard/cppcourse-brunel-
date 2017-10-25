@@ -9,9 +9,9 @@ Network::Network ()
 {}
 		
 virtual Network::~Network()
-{ for(auto& neuron: netw) 
-	{ delete neuron; 
-		neuron = nullptr; }
+{//~ { for(auto& neuron: netw) 
+	//~ { delete neuron; 
+		//~ neuron = nullptr; }
 } 
 		
 void Network::addNeuron (Neuron* n)

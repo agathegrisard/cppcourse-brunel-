@@ -33,6 +33,14 @@ double Neuron::getExtCurrent () const
 long Neuron::getClock() const
 { return clock; }
 
+double Neuron::getDelay() const 
+{ return delay; }
+
+int Neuron::getDelaySteps() const 
+{ return delay_steps; }
+
+int Neuron::getNumSpikes () const
+{ return num_spikes; }
 
 /// setters 
 
@@ -54,8 +62,12 @@ bool Neuron::isRefractory (long c) const
 
 /// update functions
 	
-void Neuron::update ()
+void Neuron::update (int time_steps)
 {
+	const auto t_stop = clock + time_steps; 
+	
+	while (clock <t_stop) 
+	{
 		if (isRefractory (clock) ) 
 		{ setMembPot(0.0); }
 			else { 
@@ -66,9 +78,10 @@ void Neuron::update ()
 								++num_spikes; } 						/// increment the number of spikes
 		}
 		
-	buffer [ clock % delay_steps] = 0.0; 								/// reset the buffer 
-	
-	++clock; 
+		buffer [ clock % delay_steps] = 0.0; 							/// reset the buffer 
+		
+		++clock; 
+	}
 }
 
 void Neuron::updatePotential () 

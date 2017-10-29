@@ -23,13 +23,12 @@ const double c2 = R*(1.0-c1);
 const double step_value = 0.1; 											/// a step corresponds to 0.1 ms
  
 
-
 class Neuron 															///  class representing a neuron 
 { 
 	private:
 	 
 		double membrane_potential;
-		double num_spikes;  											/// number of the spikes
+		int num_spikes;  												/// number of the spikes
 		double i_ext; 													/// value of the incoming current 
 		long clock; 													/// refractory clock initialised to 0 expressed in steps 
 		
@@ -50,14 +49,18 @@ class Neuron 															///  class representing a neuron
 		double getLastSpike () const; 									/// gets the last spike registered in the vector 
 		long getClock() const; 											/// gets the neuron's clock 
 		double getExtCurrent () const; 									/// gets the external current 
-	
+		double getDelay() const;
+		int getDelaySteps() const; 
+		int getNumSpikes () const; 
+		
+		
 		void setMembPot (double mp); 
 		void setExtCurrent (double i); 
 		
 		bool isSpiking () const; 										/// says if the neuron is spiking 
 		bool isRefractory (long c) const; 								/// says if the neuron is in a refractory phase 
 			
-		void update (); 												/// main updtae function: reset after spiking, increment the clock 
+		void update (int time_steps); 									/// main update function: reset after spiking, increment the clock 
 		void updatePotential ();										/// function which changes the membrane potential according to time 
 	
 		void receive (unsigned long t_arrive, double p);				/// receive incoming current

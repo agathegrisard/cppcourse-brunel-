@@ -32,5 +32,3 @@ namespace C {
 	const double Jinh = - 0.5;
 	
 }
-
-#endif

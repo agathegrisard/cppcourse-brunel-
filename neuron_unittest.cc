@@ -2,6 +2,8 @@
 #include <cassert>
 #include "neuron.hpp"
 
+
+/// we check that the mebrane potential has the good value 
 TEST(NeuronTest, Membrane) 
 {
 	Neuron neuron;
@@ -14,6 +16,7 @@ TEST(NeuronTest, Membrane)
 	EXPECT_EQ(20.0 * (1.0 - std::exp(-0.1 / 20.0)), neuron.getMembPot());
 }
 
+/// we check that the neuron is refractory after spiking 
 TEST (NeuronTest, refractory) 
 { 
 	Neuron neuron;  
@@ -22,7 +25,7 @@ TEST (NeuronTest, refractory)
 	ASSERT_FALSE (neuron.isRefractory(1.0));					
 }
 
-
+/// we check that the neuron spikes at the right time 
 TEST (NeuronTest, SpikeTimes)
 { 
 	Neuron n;
@@ -51,6 +54,7 @@ TEST (NeuronTest, SpikeTimes)
 	
 }
 
+/// we check that we obtain good values when we set a positive input
 TEST (NeuronTest, PositiveInput) 
 {
 	Neuron n; 
@@ -74,6 +78,7 @@ TEST (NeuronTest, PositiveInput)
 	
 }
 
+/// we check that we get the good values if we put a negative current 
 TEST (NeuronTest, NegativeInput) 
 {
 	Neuron n; 
@@ -108,34 +113,7 @@ TEST (NeuronTest, StandAloneSimulation)
 	EXPECT_EQ (150, n.getNumSpikes());
 }
 
-/*
-TEST (TwoNeurons,WithPSpike) 
-{
-	Neuron n1;
-	Neuron n2; 
-	
-	n1.setExtCurrent(1.01); 
-	n2.setExtCurrent(1.0); 
-	
-	for (auto i=0; i<1869+ n2.getDelaySteps(); ++i) 
-	{
-		if (n1.isSpiking())
-		{ 
-			n2.receive(i+ n2.getDelaySteps(), 0.1)
-			EXPECT_EQ(0.0, n1.getMembPot()); 
-		}
-		n2.update(1); 
-	}
-	
-	EXPECT_EQ(0,n2.getNumSpikes()); 
-	
-	n2.update(1);
-	 
-	EXPECT_EQ(0,n2.getMembPot()); 
-	EXPECT_EQ (1, n2.getNumSpikes()); 
-	-
-}
-*/
+/// we see if there is no spiking for two neurons 
 TEST (TwoNeurons,NoSpike) 
 { 
 	Neuron n1, n2; 
@@ -162,7 +140,7 @@ TEST (TwoNeurons,NoSpike)
 		
 		n2.updateTest(1); 
 	}
-	EXPECT_NEAR(0.2, n2.getMembPot(), 1); 
+	EXPECT_NEAR(0.2, n2.getMembPot(), 0.2); 
 	
 }
 

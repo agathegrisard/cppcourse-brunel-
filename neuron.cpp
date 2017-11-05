@@ -196,7 +196,7 @@ void Neuron::receive (unsigned long t_arrive,double p)
 	 * that is why we check than the tim of printing is smaller than the 
 	 * buffer size 
 	 * */
-	const size_t t_print = t_arrive % (delay_steps +1); 
+	const size_t t_print = (t_arrive + delay_steps) % (delay_steps +1); 
 	assert (t_print < buffer.size ()); 
 	
 	/** we add at the time print of the buffer the value of the membrane 

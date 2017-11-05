@@ -33,9 +33,9 @@ class Neuron
 		double delay;													/// delay expressed in ms
 		int delay_steps;												/// delay in spike transmission expressed in steps
 		
-		std::vector <double> PotMem; 										/// where we store all the membrane potentials 
-		std::vector <double> SpikeTime; 										/// where we store all the time where the neuron spikes 
-		std::vector <double> buffer ; 										/// circular incoming buffer
+		std::vector <double> PotMem; 									/// where we store all the membrane potentials 
+		std::vector <double> SpikeTime; 								/// where we store all the time where the neuron spikes 
+		std::vector <double> buffer ; 									/// circular incoming buffer
 		 
 		
 		size_t id; 

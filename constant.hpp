@@ -1,32 +1,35 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONSTANT_H 
+#define CONSTANT_H 
 
-namespace CST {
-	
-	/// time after spiking expressed in steps 
-	constexpr int REFRACTORY_TIME = 20;
-	
-	/// membrane potential threshold
-	/// spiking if the membrane potential of a neuron is above this value
-	constexpr int THRESHOLD = 20;
+#include <cmath> 
 
-	/// delay in spike transmission expressed in steps
-	constexpr int DELAY_OF_TRANSMISSION = 15;
+namespace C { 
 	
-	/// size of the ring buffer which store the transmission delay
-	constexpr int BUFFER_SIZE = 2 * DELAY_OF_TRANSMISSION;
+		
+	const double tau = 20.0; ///tau of neuron membrane (20 ms)
+	const double R = 20.0;	/// membrane resistance
+	const int C = 1; 		/// neuron's capacity 
+	const double Vth = 20.0; /// treshold value 
+	const double h = 0.1;
+	const double Tref = 20; /// time of refractory phase
 	
-	/// name of the file which edit the membrane potentials for a unique neuron
-	constexpr char POTENTIAL_FILE = "potential.file.txt";
+
+	const double c1 = exp(-h/tau);/// first constant used for the membrane potential computation 
+	const double c2 = R*(1.0-c1);/// second constant needed
+
+	const double step_value = 0.1; /// a step corespond to 0.1 ms 
 	
-	/// value after spiking of the post-synaptic excitement post-synaptic excitement value after spike
-	constexpr double E = 10.0;
+	const int Ntot=12500; ///total number of neurons in the network 
+	const int Nexc=0.8*Ntot; ///more excitatories neurons than inhibitories 
+	const int Ninh= 0.2*Ntot; ///corresponds to 20% of the total number of neurons 
 	
-	/// a step corresponds to 0.1 ms
-	constexpr double STEP_VALUE = 0.1;
+	const int Ctot=0.1*Ntot;///the number of connections is 10% of the total number of neurons
+	const int Ce = 0.1*Nexc;///it is also true for the respective excitatory 
+	const int Ci = 0.1*Ninh; /// and inhibitory 
 	
-	/// default current for some spikes
-	constexpr double DEFAULT_CURRENT= 1.5;
+	const double Jexc =0.1;///current sent by excitatories neurons
+	const double Jinh = - 0.5;/// current sent by inhibitories neurons 
+	
 }
 
 #endif

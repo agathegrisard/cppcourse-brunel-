@@ -7,13 +7,9 @@ using namespace std;
 	
 Neuron::Neuron () 														/// constructor 
 	:membrane_potential(0.0), num_spikes (0), i_ext (0.0), SpikeTime (0), 
-	delay (1.5), buffer (), clock (0), excitatory (false)
+	delay_steps (15), buffer (), clock (0), excitatory (false)
 	
 	{
-		/// changes the delay expressed in time in ms
-		/// get the value of a step in the constant file 
-		delay_steps = delay / C::step_value; 
-		
 		/// give a size to the buffer 
 		buffer.resize (delay_steps+1, 0.0);
 		/// check the error 
@@ -39,9 +35,6 @@ double Neuron::getExtCurrent () const
 
 long Neuron::getClock() const
 { return clock; }
-
-double Neuron::getDelay() const 
-{ return delay; }
 
 int Neuron::getDelaySteps() const 
 { return delay_steps; }
@@ -72,9 +65,6 @@ void Neuron::setMembPot (double mp)
 
 void Neuron::setExtCurrent (double i) 
  { i_ext = i; } 
- 
-void Neuron::setId(size_t i)
-{ id = i; }
 
 void Neuron::setExcitatory()
 { excitatory = true; }
@@ -96,7 +86,8 @@ bool Neuron::isRefractory (long c) const
 	 * the refractory phase has a certain length `
 	 * */
 	
-	return !SpikeTime.empty() && (c - SpikeTime.back() < C::Tref ); }
+	return !SpikeTime.empty() && (c - SpikeTime.back() < C::Tref ); 
+}
 
 
 /// update functions
@@ -112,11 +103,11 @@ void Neuron::update (int time_steps)
 		{ 
 			/// if the neuron is refractory the membran ehas to be at 0
 			setMembPot(0.0); }
-			else { 
-				updatePotential (); 
+		else { 
+			updatePotential (); 
 				
-				/// we register the potential of the membrane in the vector
-				PotMem.push_back(membrane_potential); 
+			/// we register the potential of the membrane in the vector
+			PotMem.push_back(membrane_potential); 
 			
 			if (isSpiking ()) 
 			{ 
@@ -131,7 +122,7 @@ void Neuron::update (int time_steps)
 		}
 		
 		/// it is important to reset the buffer at 0 
-		buffer [ clock % delay_steps] = 0.0; 							
+		buffer [ clock % buffer.size()] = 0.0; 							
 		
 		/// we increment the clock 
 		++clock; 
@@ -143,14 +134,14 @@ void Neuron::updatePotential ()
 	membrane_potential = C::c1 * membrane_potential + C::c2*i_ext; 
 	
 	/// it add the value of incoming spikes
-	membrane_potential += buffer [ clock % delay_steps]; 
+	membrane_potential += buffer [ clock % (delay_steps+1)]; 
 	
 	/// generate the background noise 
-	random_device random; 
-	mt19937 gen(random()); 
-	poisson_distribution<> poisson(2);
+	static random_device random; 
+	static mt19937 gen(random()); 
+	static poisson_distribution<> poisson(2);
 	
-	membrane_potential += poisson(gen)  * C::Jexc;
+	membrane_potential += poisson(gen)* C::Jexc;
 	
 } 
 
@@ -170,7 +161,7 @@ void Neuron::updateTest(int t_step)
 								++num_spikes; } 						/// increment the number of spikes
 		}
 		
-		buffer [ clock % delay_steps] = 0.0; 							/// reset the buffer 
+		buffer[ clock % delay_steps] = 0.0; 							/// reset the buffer 
 		
 		++clock; 
 	}
@@ -183,7 +174,7 @@ void Neuron::updatePotentialTest ()
 	 * */ 
 	membrane_potential = C::c1 * membrane_potential + C::c2*i_ext; 
 	
-	membrane_potential += buffer [ clock % delay_steps]; 
+	membrane_potential += buffer[ clock % buffer.size()]; 
 	
 } 
 		
@@ -196,14 +187,14 @@ void Neuron::receive (unsigned long t_arrive,double p)
 	 * that is why we check than the tim of printing is smaller than the 
 	 * buffer size 
 	 * */
-	const size_t t_print = (t_arrive + delay_steps) % (delay_steps +1); 
+	const size_t t_print = (t_arrive + delay_steps) % (buffer.size()); 
 	assert (t_print < buffer.size ()); 
 	
 	/** we add at the time print of the buffer the value of the membrane 
 	 * of the sending neuron 
 	 * */ 
 	
-	buffer [t_print] += p; 
+	buffer[t_print] += p; 
 }
 
 /// convert from step to ms

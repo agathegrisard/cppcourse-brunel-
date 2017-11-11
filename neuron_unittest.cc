@@ -144,8 +144,24 @@ TEST (TwoNeurons,NoSpike)
 	
 }
 
+TEST (NeuronTest, RecieveSpike) {
 
-///we test all the tests 
+	Neuron n;
+	double J = 0.1;
+
+	///make the neuron recieve a spike with weight 0.1 and delay 15 steps
+	n.receive(0, J);
+
+	///update the neuron one step past the delay
+	
+	n.updateTest(n.getDelaySteps()+1);
+	
+
+	///check if its membrane potential is equal to the spike recieved
+	EXPECT_EQ(J, n.getMembPot());
+} 
+
+///we run all the tests 
 
 int main(int argc, char** argv) 
 {

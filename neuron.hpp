@@ -30,16 +30,15 @@ class Neuron
 		double i_ext; 													/// value of the incoming current 
 		long clock; 													/// refractory clock initialised to 0 expressed in steps 
 		
-		double delay;													/// delay expressed in ms
 		int delay_steps;												/// delay in spike transmission expressed in steps
 		
 		std::vector <double> PotMem; 									/// where we store all the membrane potentials 
 		std::vector <double> SpikeTime; 								/// where we store all the time where the neuron spikes 
 		std::vector <double> buffer ; 									/// circular incoming buffer
 		 
-		
-		size_t id; 
 		bool excitatory; 
+		
+		
 		
 	
 		
@@ -67,8 +66,7 @@ class Neuron
 		double getMembPot ()const;										/// get the membrane potential 
 		double getLastSpike () const; 									/// get the last spike registered in the vector 
 		long getClock() const; 											/// get the neuron's clock 
-		double getExtCurrent () const; 									/// get the external current 
-		double getDelay() const;										/// get the delay in ms  
+		double getExtCurrent () const; 									/// get the external current   
 		int getDelaySteps() const; 										/// get the delay in steps (more used than the previous getDelay() ) 
 		int getNumSpikes () const; 										/// get the number of spikes
 		std::vector<double> getSpikeTime () const; 						/// get the vector where are registered all the pikes of a neuron 
@@ -78,7 +76,6 @@ class Neuron
 		
 		void setMembPot (double mp); 									/// set the membrane potential of a neuron at the given number
 		void setExtCurrent (double i); 									/// set the external current at the given parameter i
-		void setId(size_t i); 											/// set the number of a neuron when it is pat of network 
 		void setExcitatory(); 											/// set the bool excitatoy at true which means that the neuron becomes excitatory 
 		
 		

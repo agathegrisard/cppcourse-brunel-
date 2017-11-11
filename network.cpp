@@ -1,4 +1,4 @@
-#include <fstream>
+
 #include <iostream>
 #include <cassert>
 #include "constant.hpp"
@@ -6,15 +6,14 @@
 
 
 Network::Network ()
-		: neurons_nb (C::Ntot),list_random(random_nb()), 
+		: neurons_nb (C::Ntot), list_random(random_nb()), 
 		excitatories(0,C::Nexc-1), inhibitories(C::Nexc,C::Ntot-1)
+		
 		/// the number of excitatories goes from 0 to the Number of excitatories -1
 		/** the number of inhibitories goes from the number of 
 		 * excitatories to the total number of neurons - 1 
 		 * */ 
-{
-	/// the vector of neurons has a size of the attribute number of neurons 
-	ntw.resize(neurons_nb);  
+{ 
 	/// the connexions grid also have this size 
 	connexions.resize(neurons_nb); 
 	
@@ -24,8 +23,15 @@ Network::Network ()
 	for (auto i=0; i<neurons_nb; ++i) 
 	{ 
 		connexions[i].resize(neurons_nb); 
+		
+		for (auto j=0; j<neurons_nb; ++j) 
+		{ connexions [i][j] = 0; }
 	}
+	 
+	spike.open("../sim.gdf");
 }
+
+
 
 		
 void Network::addNeuron ()
@@ -35,17 +41,14 @@ void Network::addNeuron ()
 	{ 
 		Neuron n;
 		
+		/// we change its excitatory attribute at true 
+		n.setExcitatory();
+		
 		/// we push back a random neuron in the ntw vector 
 		ntw.push_back(n);
 		
-		/** we set the identifiant of the neuron which corresponds
-		 * to its number in the grid 
-		 * */  
-		n.setId(ntw.size());  
-		
-		/// we change its excitatory attribute at true 
-		n.setExcitatory();
 	}
+	
 	
 	/// then we add the good amount of inhibitories at the end of the vector
 	for (auto i=0; i<C::Ninh; ++i)
@@ -55,42 +58,44 @@ void Network::addNeuron ()
 		/// we create a random neuron 
 		ntw.push_back(n);
 		
-		/// we set its identifiant 
-		n.setId(ntw.size()); 
-		
 		/** we don't need to change its excitatory attribute because 
 		 * it is by default at false (see neuron's constructor) 
 		 * */
 	} 
+	
  }
 
 
 void Network::createConnections ()
 {
 	/// we scroll until we reach the total number of neurons in the network 
-	for (int target =0; target<C::Ntot; ++target)
+	for (int target =0; target<neurons_nb; ++target)
 	{
 		///we scroll until we have the good number of excitatories connections
 		for (size_t i=0; i<C::Ce; ++i) 
 		{
 			/// we get randomly the number of the sending neuron 
-			auto source = excitatories (list_random);
+			int  source = excitatories (list_random);
 			
 			/** we put the right amount of connections in the table 
 			 * the source is the number of the sending neuron 
 			 * target is the number which will receive the signal 
 			 * */ 
 			connexions[source][target] +=1; 	
+			
 		}
 		
 		/// we do the same thing as for the excitatories for the inhibitories 
-		for (size_t i=C::Ce; i<C::Ctot; ++i) 
+		for (size_t i=0; i<C::Ci; ++i) 
 		{ 
-			auto source = inhibitories (list_random); 
+			int  source = inhibitories (list_random); 
 			connexions[source][target] +=1; 
+			
 		}
 	}
 }
+
+
 		
 void Network::update (unsigned long time)
 { 
@@ -103,9 +108,11 @@ void Network::update (unsigned long time)
 		 * to his connected neurons 
 		 * */ 
 		if (ntw[i].isSpiking()) 
-		{ 
+		{  
+			spike<<time<<" "<<i<<std::endl; 
+			
 			/// we scroll all the neurons to whom he sends a signal 
-			for (size_t target=0; target<connexions[i].size(); ++i) 
+			for (size_t target=0; target<connexions[i].size(); ++target) 
 			{ 
 				/** we have that the connection is not 0, which means he has 
 				 * a connection or more with this specific neuron 
@@ -158,7 +165,7 @@ void Network::run2neurons(unsigned long time)
 			if (n1.isSpiking()) {
 			   n2spike<< "Spikes from 1 at : " << n1.convert_ms(n1.getLastSpike())<<std::endl;
 			  /// teh second neuron has a delay before receiving the current from the first neuron 
-			  n2.receive (t + n1.getDelay(), n1.getMembPot());  
+			  n2.receive (t + n1.getDelaySteps(), n1.getMembPot());  
 			}
 			
 			if (n2.isSpiking()) 
@@ -178,9 +185,6 @@ void Network::run (unsigned long time)
 { 
 	unsigned long t=0;
 	
-	/// cerate a file where we save the values of spiking time for each neuron
-	std::ofstream spike; 
-	spike.open("../sim.gdf"); 
 	
 	///creation of the network 
 	addNeuron(); 
@@ -196,17 +200,6 @@ void Network::run (unsigned long time)
 		
 		++t; ///incrementation of the time 
 	}
-	
-	///saving of the values in the file 
-	
-	for (auto i=0; i<neurons_nb; ++i) 
-		{ 
-			for (auto j=0; j<ntw[i].getNumSpikes(); ++j) 
-			{ 
-				spike<<ntw[i].getSpikeTime()[j]<<"\t"<<i<<"\n"; 
-				}
-			
-		}
 	
 	///close the file 	
 	spike.close(); 

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <random>
 #include <iostream>
+#include <fstream>
 
 #include "constant.hpp"
 #include "Neuron.hpp"
@@ -33,6 +34,7 @@ class Network
 		/// correspond to the size of the vectors 
 		size_t neurons_nb; 
 		
+		
 		/** needed to generate aleatory network 
 		 * init random distribution and engine 
 		 * */ 
@@ -40,6 +42,9 @@ class Network
 		std::mt19937 list_random; 
 		std::uniform_int_distribution<> excitatories; 
 		std::uniform_int_distribution<> inhibitories; 
+		
+		/// file where I save all the spikes 
+		std::ofstream spike;
 	
 	public: 
 	
@@ -58,7 +63,7 @@ class Network
 		 * just erase the ibject when finished using it 
 		 * 
 		 * */  
-		~Network() = default; 
+		~Network() =default; 
 		
 		/** \fn addNeuron 
 		 * 
@@ -74,6 +79,7 @@ class Network
 		 * 
 		 * */ 
 		void addNeuron (); 
+		
 		
 		/** \fn creatConnections
 		 * 

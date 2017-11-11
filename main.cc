@@ -11,13 +11,13 @@ int main(int argc, char** argv)
 	Network net; 
 	
 	///set a time for our simulation
-	unsigned int time_simulation = 5000; 
+	unsigned int time_simulation = 1000; 
 	
 	///see how 2 neurons interact
-	net.run2neurons(5000); 
+	net.run2neurons(time_simulation); 
 	
 	///run the simulation during 1000 steps 
-	net.run(1000); 
+	net.run(time_simulation); 
 	
 	return 0; 
   

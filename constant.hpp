@@ -27,7 +27,7 @@ namespace C {
 	const int Ce = 0.1*Nexc;///it is also true for the respective excitatory 
 	const int Ci = 0.1*Ninh; /// and inhibitory 
 	
-	const double Jexc =0.1;///current sent by excitatories neurons
+	const double Jexc = 0.1;///current sent by excitatories neurons
 	const double Jinh = - 0.5;/// current sent by inhibitories neurons 
 	
 }
